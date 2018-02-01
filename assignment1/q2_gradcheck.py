@@ -21,6 +21,7 @@ def gradcheck_naive(f, x):
 
     # Iterate over all indexes ix in x to check the gradient.
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
+    # Efficient multi-dimensional iterator object to iterate over arrays
     while not it.finished:
         ix = it.multi_index
 
@@ -37,7 +38,18 @@ def gradcheck_naive(f, x):
         # to test cost functions with built in randomness later.
 
         ### YOUR CODE HERE:
-        raise NotImplementedError
+        # raise NotImplementedError
+        x_add_h = x[ix] + h
+
+        x_sub_h = x[ix] - h
+
+        random.setstate(rndstate)
+        f_x_add_h, _ = f(x_add_h)
+
+        random.setstate(rndstate)
+        f_x_sub_h, _ = f(x_sub_h)
+        numgrad = (f_x_add_h - f_x_sub_h) / (2*h)
+
         ### END YOUR CODE
 
         # Compare gradients
@@ -82,4 +94,4 @@ def your_sanity_checks():
 
 if __name__ == "__main__":
     sanity_check()
-    your_sanity_checks()
+    # your_sanity_checks()
